@@ -5,23 +5,30 @@ import com.codelion.app_chat.RsData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+@Slf4j
 @Controller
 @RequestMapping("/chat")
 public class ChatController {
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
+    @GetMapping("/room")
+    public String showRoom() {
+        return "chat/room";
+    }
+
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
     public static class WriteMessageRequest {
-        private String authorName;
-        private String content;
+        private final String authorName;
+        private final String content;
     }
 
     @Getter
@@ -46,16 +53,40 @@ public class ChatController {
     }
 
     /*조회*/
+    /*3번 게시물 이후 조회*/
     @GetMapping("/messages")
     @ResponseBody
-    public RsData<List<ChatMessage>> messages() {
+    public RsData<MessagesResponse> messages(MessagesRequest request) {
+        List<ChatMessage> messages = chatMessages;
+
+        if (request.fromId != null) {
+            int index = IntStream.range(0, messages.size())
+                    .filter(i -> chatMessages.get(i).getId() == request.fromId)
+                    .findFirst()
+                    .orElse(-1);
+
+            if (index != -1) {
+                messages = messages.subList(index + 1, messages.size());
+            }
+        }
+
         return new RsData<>(
                 "S-1",
                 "성공",
-                chatMessages
+                new MessagesResponse(messages, messages.size())
         );
     }
 
-    /*3번 게시물 이후 조회*/
+    @Getter
+    @AllArgsConstructor
+    public static class MessagesResponse{
+        private final List<ChatMessage> messages;
+        private final long count;
+    }
 
+    @Getter
+    @AllArgsConstructor
+    public static class MessagesRequest{
+        private final Long fromId;
+    }
 }

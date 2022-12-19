@@ -1,3 +1,15 @@
 server:
   port: 8080
 
+logging:
+  level:
+    com.codelion.app_chat: debug
+spring:
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
