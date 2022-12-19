@@ -2,12 +2,15 @@ package com.codelion.app_chat.controller;
 
 import com.codelion.app_chat.ChatMessage;
 import com.codelion.app_chat.RsData;
+import com.codelion.app_chat.util.SseEmitters;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +18,11 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatController {
+
+    private final SseEmitters sseEmitters;
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     @GetMapping("/room")
@@ -45,6 +51,7 @@ public class ChatController {
         ChatMessage message = new ChatMessage(request.authorName, request.content);
 
         chatMessages.add(message);
+        sseEmitters.noti("chat__messageAdded");
 
         return new RsData<>(
                 "S-1",
