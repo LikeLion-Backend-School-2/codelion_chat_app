@@ -26,9 +26,10 @@ public class ChatController {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class WriteMessageRequest {
-        private final String authorName;
-        private final String content;
+        private String authorName;
+        private String content;
     }
 
     @Getter
@@ -41,7 +42,7 @@ public class ChatController {
     @PostMapping("/writeMessage")
     @ResponseBody
     public RsData<WriteMessageResponse> writeMessage(@RequestBody WriteMessageRequest request) {
-        ChatMessage message = new ChatMessage("윤서장", "안녕하세요.");
+        ChatMessage message = new ChatMessage(request.authorName, request.content);
 
         chatMessages.add(message);
 
@@ -79,14 +80,14 @@ public class ChatController {
 
     @Getter
     @AllArgsConstructor
-    public static class MessagesResponse{
+    public static class MessagesResponse {
         private final List<ChatMessage> messages;
         private final long count;
     }
 
     @Getter
     @AllArgsConstructor
-    public static class MessagesRequest{
+    public static class MessagesRequest {
         private final Long fromId;
     }
 }
