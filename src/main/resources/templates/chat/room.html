@@ -10,7 +10,7 @@
         </ul>
     </div>
 
-    <button onclick="Chat__loadMore();">로드</button>
+    <!--<button onclick="Chat__loadMore();">로드</button>-->
 </div>
 
 <script>
@@ -91,10 +91,10 @@
     const Chat__elMessageUl = document.querySelector('.chat__message-ul');
 
     function Chat__drawMessages(messages) {
-        if (messages.length == 0) return;
-
-        // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
-        Chat__lastLoadedId = messages[messages.length - 1].id;
+        if (messages.length > 0) {
+            // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
+            Chat__lastLoadedId = messages[messages.length - 1].id;
+        }
 
         messages.forEach((message) => {
             Chat__elMessageUl
@@ -103,7 +103,11 @@
                     `<li>${message.authorName} : ${message.content}</li>`
                 );
         });
+
+        //Chat__loadMore(); // 즉시 실행
+        setTimeout(Chat__loadMore, 500); // 지금은 아니고 0.5 초 후에 실행해라
     }
 
+    Chat__loadMore();
     // 채팅 메시지들 읽기 끝
 </script>
