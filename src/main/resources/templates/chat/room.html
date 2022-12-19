@@ -10,7 +10,7 @@
         </ul>
     </div>
 
-    <!--<button onclick="Chat__loadMore();">로드</button>-->
+    <!--<button onclick="Chat__loadMore();">로드 수동</button>-->
 </div>
 
 <script>
@@ -43,42 +43,44 @@
 </script>
 
 <script>
-    // 채팅 메세지 작성 시작
+    /*======채팅 메세지 작성 시작=======*/
     function Chat__writeMessage(form) {
+        //---name 공백제거---
         form.authorName.value = form.authorName.value.trim();
-
+        //작성자 입력 여부 체크
         if (form.authorName.value.length == 0) {
             alert("작성자를 입력해주세요.");
             form.authorName.focus();
-
             return;
         }
 
+        //---content 공백제거---
         form.content.value = form.content.value.trim();
-
+        //내용 입력 여부 체크
         if (form.content.value.length == 0) {
+            alert("내용을 입력해주세요.");
             form.content.focus();
-
             return;
         }
 
+        //---post 함수 실행---
         fetchPost("/chat/writeMessage", {
             authorName: form.authorName.value,
             content: form.content.value
         })
             .then(console.log);
-
+        //실행 후 공백
         form.content.value = '';
         form.content.focus();
     }
-
-    // 채팅 메세지 작성 끝
+    /*======채팅 메세지 작성 끝=======*/
 
     // 채팅 메세지들 읽기 시작
     // 현재 클라이언트가 받은 메세지 번호를 입력해야 합니다.
     // 그래야 메세지 요청시에 필요한 부분만 가져오게 됩니다.
     let Chat__lastLoadedId = 0;
 
+    /*======체팅 내용 가져오기=======*/
     function Chat__loadMore() {
         fetchGet("/chat/messages", {
             fromId: Chat__lastLoadedId
@@ -90,6 +92,7 @@
 
     const Chat__elMessageUl = document.querySelector('.chat__message-ul');
 
+    /*======체팅 그리기=======*/
     function Chat__drawMessages(messages) {
         if (messages.length > 0) {
             // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
@@ -107,7 +110,8 @@
         //Chat__loadMore(); // 즉시 실행
         setTimeout(Chat__loadMore, 500); // 지금은 아니고 0.5 초 후에 실행해라
     }
+    /*======체팅 그리기=======*/
 
-    Chat__loadMore();
+    Chat__loadMore();//재귀
     // 채팅 메시지들 읽기 끝
 </script>
